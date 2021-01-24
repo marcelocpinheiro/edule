@@ -4,7 +4,7 @@ import ExternalPanel from "../external-panel";
 import Router from "next/router";
 import { useState } from 'react'
 
-export default function SignupPanel({ onSubmitHandler, errors }) {
+export default function SignupPanel({ onSubmitHandler, errors, success }) {
 
     const [fullname, setFullName] = useState("")
     const [email, setEmail] = useState("")
@@ -17,10 +17,14 @@ export default function SignupPanel({ onSubmitHandler, errors }) {
 
     return (
         <ExternalPanel title="Cadastrar-se no Edule">
-            {errors.length > 0 && (<div className="my-2 p-2 bg-red-500 text-white border-red-800">
+            {(errors.length > 0 && !success) && (<div className="my-2 p-2 bg-red-500 text-white border-red-800">
                 { errors.map(error => (
                     <p>{error}</p>
                 )) }
+            </div>) }
+
+            {success && (<div className="my-2 p-2 bg-green-500 text-white border-green-800">
+                <p>Usuário cadastrado com sucesso. Clique em "Fazer login" para proceder com seu login</p>
             </div>) }
             <div className="my-2">
                 <ExternalInput label="Nome-completo" type="text" onChangeHandler={setFullName}/>

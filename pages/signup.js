@@ -11,7 +11,7 @@ export default function Signup() {
 
   const [errors, setErrors] = useState([])
   const [success, setSuccess] = useState(false)
-  const [loading, setLoading] = useRecoilState(loadingState);
+  const [_, setLoading] = useRecoilState(loadingState);
 
   return (
     <>
@@ -19,7 +19,9 @@ export default function Signup() {
       <MainHeader />
       <Container>
         <div className="flex justify-center h-auto">
-          <SignupPanel errors={errors} onSubmitHandler={value => handleSubmitRule(value, setErrors, setSuccess, setLoading )}/>
+          <SignupPanel errors={errors}  
+          success={success}
+          onSubmitHandler={value => handleSubmitRule(value, setErrors, setSuccess, setLoading )}/>
         </div>
       </Container>
     </>

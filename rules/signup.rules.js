@@ -24,10 +24,17 @@ export async function handleSubmitRule(payload, setErrors, setSuccess, setLoadin
     setLoading(true)
 
     try{
-        await signup(payload)
-        setSuccess(true)
+        const response = await signup(payload)
+        if(response.ok) {
+            setSuccess(true)
+        } else {
+            if(response.data.errors) {
+                setErrors(response.data.errors)
+            } else {
+                setErrors(["Não foi possível cadastrar-se. Por favor, verifique os valores inseridos"])
+            }
+        }
     } catch (e) {
-        console.log(e)
         setErrors(["Não foi possível cadastrar-se. Por favor, verifique os valores inseridos"])
     } finally {
         setLoading(false)

@@ -1,7 +1,4 @@
 export async function signup(payload) { 
-
-    console.log(process.env.VERCEL_URL)
-    
     const response = await fetch(`/api/signup`, {
         method: 'POST',
         headers: {
@@ -9,6 +6,9 @@ export async function signup(payload) {
         },
         body: JSON.stringify(payload)
     });
-    console.log(response)
-    return (await response.json())
+    
+    return {
+        ok: response.ok,
+        data: await response.json()
+    }
 }

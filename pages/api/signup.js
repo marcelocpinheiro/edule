@@ -1,4 +1,4 @@
-import { database } from '../../libs/firebase'
+import { firebase, database } from '../../libs/firebase'
 import { generateHash } from '../../utils/password'
 import { validateEmail } from '../../utils/validations'
 
@@ -17,6 +17,7 @@ export default async (req, res) => {
         if(req.body.password !== req.body.passwordConfirmation) errors.push("A confirmação de senha deve ser igual a senha");
     }
 
+
     if(errors.length > 0) {
         res.statusCode = 400
         res.json({
@@ -25,30 +26,47 @@ export default async (req, res) => {
         return;
     }
 
+    
+    
     try {
+        const userCredential = await firebase.auth().createUserWithEmailAndPassword(req.body.email, req.body.password)
+        const uid = userCredential.user.uid
+
         const userObj = {
             fullname: req.body.fullname,
-            password: await generateHash(req.body.password),
-            email: req.body.email
+            email: req.body.email,
+            uid
         }
-    
-        database.ref("users").push(userObj, (error) => {
+
+        database.ref(`users`).push(userObj, (error) => {
             if(error) {
-                console.error(error)
                 res.statusCode = 500
                 res.json({
                     errors: ['Erro interno. Tente novamente mais tarde.']
                 })
             }
-
-            res.statusCode = 201
-            res.json({ message: 'Usuário criado' })
         })
-    } catch {
+
+        res.statusCode = 200
+        res.json({
+            message: "Usuário cadastrado com sucesso"
+        })
+        return
+    } catch (error) {
+        if(error.code == 'auth/email-already-in-use') {
+            res.statusCode = 400
+            res.json({
+                errors: ['Já existe um usuário com este e-mail']
+            })
+            return
+        }
+
         res.statusCode = 500
         res.json({
-            errors: ['Erro interno. Tente novamente mais tarde.']
+            errors: ['Não foi possível cadastrar o usuário. Por favor, tente novamente mais tarde.']
         })
+        return
+        
     }
   }
   
