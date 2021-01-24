@@ -1,6 +1,8 @@
 export async function signup(payload) { 
+
+    console.log(process.env.VERCEL_URL)
     
-    const response = await fetch(`${process.env.VERCEL_URL}/api/signup`, {
+    const response = await fetch(`/api/signup`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
